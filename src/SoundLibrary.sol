@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: The Unlicense
 pragma solidity ^0.8.19;
 
-import "solady/src/utils/SSTORE2.sol";
+import "lib/solady/src/utils/SSTORE2.sol";
 
 contract SoundLibrary {
 
@@ -20,6 +20,8 @@ contract SoundLibrary {
     error SoundBiteTooLong(uint256 length);
     error SoundBiteStaticcallFailed(bytes32 id);
 
+    event NewSoundBite(bytes32 id, bool isCompressed);
+
     /*//////////////////////////////////////////////////////////////
                        STORE AND LIST SOUNDBITES
     //////////////////////////////////////////////////////////////*/
@@ -36,6 +38,8 @@ contract SoundLibrary {
 
         soundBites[id].pointers = newSoundBiteArray;
         soundBites[id].isCompressed = false;
+
+        emit NewSoundBite(id, false);
     }
 
     // list a multipart soundbite to the library (usually SSTORE2 based soundbites), allows to specify if the soundbite components are compressed or not
@@ -48,6 +52,8 @@ contract SoundLibrary {
 
         soundBites[id].pointers = newSoundBite;
         soundBites[id].isCompressed = compressed;
+
+        emit NewSoundBite(id, compressed);
     }
 
     // This allows the user to store a piece of audio in an SSTORE2 contract, and returns the pointer.
